@@ -1,21 +1,35 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { updateTabData } from "../services/tabsSlice";
+import { useDispatch } from "react-redux";
 
-const APIRequestComponent = () => {
+const APIRequestComponent = ({
+  method: tabMethod,
+  url: tabUrl,
+  queryParams: tabQueryParams,
+  jsonData: tabJsonData,
+  headers: tabHeaders,
+  response: tabResponse,
+  loading: tabLoading,
+  error: tabError,
+  activeTab: tabActiveTab,
+  tabId,
+}) => {
+  const dispatch = useDispatch();
   // State for managing form inputs
-  const [method, setMethod] = useState("GET");
-  const [url, setUrl] = useState("");
-  const [queryParams, setQueryParams] = useState([{ key: "", value: "" }]);
-  const [jsonData, setJsonData] = useState('');
-  const [headers, setHeaders] = useState([{ key: "", value: "" }]);
+  const [method, setMethod] = useState(tabMethod);
+  const [url, setUrl] = useState(tabUrl);
+  const [queryParams, setQueryParams] = useState(tabQueryParams);
+  const [jsonData, setJsonData] = useState(tabJsonData);
+  const [headers, setHeaders] = useState(tabHeaders);
 
   // State for managing API response
-  const [response, setResponse] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [response, setResponse] = useState(tabResponse);
+  const [loading, setLoading] = useState(tabLoading);
+  const [error, setError] = useState(tabError);
 
   // State for managing tabs
-  const [activeTab, setActiveTab] = useState("queryParams");
+  const [activeTab, setActiveTab] = useState(tabActiveTab);
 
   // Function to handle the API request
   const handleSend = async () => {
@@ -31,7 +45,7 @@ const APIRequestComponent = () => {
         headers: {}, // Initialize an empty object for headers
         data: {}, // Initialize an empty object for data
       };
-    
+
       // Populate params if there are query parameters
       if (queryParams.length > 0) {
         const paramsObject = {};
@@ -44,30 +58,32 @@ const APIRequestComponent = () => {
       }
 
       // Populate data if there is JSON data
-      if (jsonData.length > 0 && jsonData.trim()!== "") {
+      if (jsonData.length > 0 && jsonData.trim() !== "") {
         config.data = JSON.parse(jsonData);
-        console.log(JSON.parse(jsonData))
+        console.log(JSON.parse(jsonData));
       }
 
       // Populate headers if there are headers
-    if (headers.length > 0) {
-      const headersObject = {};
-      headers.forEach((header) => {
-        if (header.key && header.key.trim() !== "") {
-          headersObject[header.key] = header.value;
-        }
-      });
-      config.headers = headersObject;
-    }
+      if (headers.length > 0) {
+        const headersObject = {};
+        headers.forEach((header) => {
+          if (header.key && header.key.trim() !== "") {
+            headersObject[header.key] = header.value;
+          }
+        });
+        config.headers = headersObject;
+      }
 
       const apiResponse = await axios(config);
       const endTime = performance.now();
       const duration = endTime - startTime;
-      console.log(config)
+      console.log(config);
       setResponse({ ...apiResponse, duration });
-      console.log(response);
+      dispatch(updateTabData({ tabId, data: { response: { ...apiResponse, duration } } }));
+      dispatch(updateTabData({ tabId, data: { error:null} }))
     } catch (error) {
       setError(error);
+      dispatch(updateTabData({ tabId, data: { error: error } }))
       console.log(error);
     } finally {
       setLoading(false);
@@ -79,23 +95,51 @@ const APIRequestComponent = () => {
     setQueryParams([...queryParams, { key: "", value: "" }]);
   };
 
-  // Function to handle changes in a query parameter key or value
-  const handleQueryParamChange = (index, field, newValue) => {
-    const updatedQueryParams = [...queryParams];
-    updatedQueryParams[index][field] = newValue;
-    setQueryParams(updatedQueryParams);
-  };
-
   // Function to add a new header
   const addHeader = () => {
     setHeaders([...headers, { key: "", value: "" }]);
   };
 
+  // Function to handle changes in a query parameter key or value
+  const handleQueryParamChange = (index, field, newValue) => {
+    const updatedQueryParams = [...queryParams];
+    updatedQueryParams[index] = {
+      ...updatedQueryParams[index],
+      [field]: newValue,
+    };
+    setQueryParams(updatedQueryParams);
+    dispatch(
+      updateTabData({ tabId, data: { queryParams: updatedQueryParams } })
+    );
+  };
+
   // Function to handle changes in a header key or value
   const handleHeaderChange = (index, field, newValue) => {
     const updatedHeaders = [...headers];
-    updatedHeaders[index][field] = newValue;
+    updatedHeaders[index] = {
+      ...updatedHeaders[index],
+      [field]: newValue,
+    };
     setHeaders(updatedHeaders);
+    dispatch(updateTabData({ tabId, data: { headers: updatedHeaders } }));
+  };
+
+  // Function to handle changes in method
+  const handleMethodChange = (newValue) => {
+    setMethod(newValue);
+    dispatch(updateTabData({ tabId, data: { method: newValue } }));
+  };
+
+  // Function to handle changes in url
+  const handleUrlChange = (newValue) => {
+    setUrl(newValue);
+    dispatch(updateTabData({ tabId, data: { url: newValue } }));
+  };
+
+  // Function to handle changes in jsonData
+  const handleJsonDataChange = (newValue) => {
+    setJsonData(newValue);
+    dispatch(updateTabData({ tabId, data: { jsonData: newValue } }));
   };
 
   return (
@@ -104,9 +148,11 @@ const APIRequestComponent = () => {
         <select
           className="border  focus:outline-none  focus:border-2  focus:border-gray-300 rounded-md p-2 mr-2"
           value={method}
-          onChange={(e) => setMethod(e.target.value)}
+          onChange={(e) => {
+            handleMethodChange(e.target.value);
+          }}
         >
-          <option  value="GET">GET</option>
+          <option value="GET">GET</option>
           <option value="POST">POST</option>
           <option value="PUT">PUT</option>
           <option value="DELETE">DELETE</option>
@@ -116,7 +162,9 @@ const APIRequestComponent = () => {
           className="border w-96 focus:outline-none  focus:border-2  focus:border-gray-300 rounded-l-md p-2 flex-grow"
           placeholder="https://example.com/todos"
           value={url}
-          onChange={(e) => setUrl(e.target.value)}
+          onChange={(e) => {
+            handleUrlChange(e.target.value);
+          }}
         />
         <button
           className="bg-blue-500 rounded-r-md text-white p-2 px-3"
@@ -162,7 +210,7 @@ const APIRequestComponent = () => {
           <h3>Query Params</h3>
 
           {/* Render input fields for each query parameter */}
-          {queryParams.map((param, index) => (
+          {queryParams?.map((param, index) => (
             <div className="flex mb-2" key={index}>
               <input
                 type="text"
@@ -211,7 +259,7 @@ const APIRequestComponent = () => {
           <h3>Headers</h3>
 
           {/* Render input fields for each header */}
-          {headers.map((header, index) => (
+          {headers?.map((header, index) => (
             <div className="flex mb-2" key={index}>
               <input
                 type="text"
@@ -263,7 +311,9 @@ const APIRequestComponent = () => {
             className="border focus:outline-none  focus:border-2  focus:border-gray-300 rounded-md p-2 w-full"
             placeholder='{"key": "value"}'
             value={jsonData}
-            onChange={(e) => setJsonData(e.target.value)}
+            onChange={(e) => {
+              handleJsonDataChange(e.target.value);
+            }}
           />
         </div>
       )}

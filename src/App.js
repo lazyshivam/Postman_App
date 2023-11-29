@@ -27,33 +27,37 @@ function App() {
         // console.log(data.user.displayName);
         setUserData(data.user);
         setIsloggedIn(true);
-        
       })
       .catch((err) => {
         console.error(err);
-        
       });
   }, []);
 
   return (
     <>
       <Header isLoggedIn={isLoggedIn} user={userData} />
-      <Routes>
-        {!isLoggedIn ? (
-          <>
-            <Route exact path="/" element={<LandingPage />} />
-          </>
-        ) : (
-          <>
-            <Route exact path="/" element={<Home  loggedInUser={userData.displayName}/>} />
-          </>
-        )}
-        <Route path="/workspace" element={<TabCollections />} />
-        <Route path="/about" element={<About />} />
-      </Routes>
-      <footer className="bg-gray-700  text-white  p-4 text-center">
-        <p>&copy; 2023 Postman. All rights reserved.</p>
-      </footer>
+      <div className="">
+        <Routes>
+          {!isLoggedIn ? (
+            <>
+              <Route exact path="/" element={<LandingPage />} />
+            </>
+          ) : (
+            <>
+              <Route
+                exact
+                path="/"
+                element={<Home loggedInUser={userData.displayName} />}
+              />
+            </>
+          )}
+          <Route path="/workspace" element={<TabCollections />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
+        <footer className="bg-gray-700  text-white  p-4 text-center">
+          <p>&copy; 2023 Postman. All rights reserved.</p>
+        </footer>
+      </div>
     </>
   );
 }

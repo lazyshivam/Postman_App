@@ -3,7 +3,6 @@ import axios from "axios";
 
 const Home = ({loggedInUser}) => {
   const [apiLinks, setApiLinks] = useState([]);
-  // const [loggedInUser, setLoggedInUser] = useState("John Doe"); // Replace with actual user data
   const [newLink, setNewLink] = useState({title:"", url: "", method: "" });
 
   // Fetch saved API links from the server
@@ -23,6 +22,7 @@ const Home = ({loggedInUser}) => {
      })
   }, []);
 
+  // Deleting the saved API links from the server
   const handleDelete = (id) => {
     axios.delete(`http://localhost:8000/api/data/apiLinks/${id}`,{withCredentials:true}).then((response)=>{
      if(response.status===200){
@@ -38,7 +38,8 @@ const Home = ({loggedInUser}) => {
     
   };
   const [error,setError]=useState('')
-
+ 
+  // Saving the API links to the server
   const handleSave = () => {
     if (newLink.title.trim()==='' || newLink.url.trim() === '' || newLink.method.trim() === '') {
       setError('There is an empty field.');
@@ -55,9 +56,11 @@ const Home = ({loggedInUser}) => {
     
   };
  
-  const [searchTerm,setSearchTerm]=useState('')
+  const [searchTerm,setSearchTerm]=useState('');
 
-   const [filterData,setFilterData]=useState(apiLinks)
+   const [filterData,setFilterData]=useState(apiLinks);
+
+  //  filtering the saved api links 
   useEffect(()=>{
     const filteredLinks=apiLinks.filter((link)=>{
       return link.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -66,7 +69,7 @@ const Home = ({loggedInUser}) => {
     console.log(filteredLinks);
   },[searchTerm,apiLinks])
   return (
-    <div className=" mx-12 my-8">
+    <div className="mx-12 h-auto my-8">
       <div className="mb-8">
         <h1 className="text-4xl font-extrabold mb-2">
           Welcome, {loggedInUser}!
@@ -114,7 +117,7 @@ const Home = ({loggedInUser}) => {
           </select>
           <button
             type="button"
-            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
             onClick={handleSave}
           >
             Save

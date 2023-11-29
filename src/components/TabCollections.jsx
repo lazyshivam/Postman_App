@@ -26,7 +26,7 @@ const TabCollections = () => {
     dispatch(switchTab(index));
   };
   return (
-    <div className="m-4 h-screen">
+    <div className="m-4  ">
       <div className="flex mb-4">
         {tabs.map((tab, index) => (
           <div key={tab.id} className="mr-2">
@@ -49,16 +49,30 @@ const TabCollections = () => {
       </div>
 
       {tabs.length === 0 ? (
-        <div className="text-center text-gray-500">
+        <div className="text-center h-screen text-gray-500">
           No tabs open. Click the '+' button to add a new tab.
         </div>
       ) : (
         tabs.map((tab, index) => (
           <div
             key={tab.id}
-            className={`tab-content ${index === activeTab ? "" : "hidden"}`}
+            className={`tab-content  ${index === activeTab ? "" : "hidden"}`}
           >
-            <APITab onClose={() => handleRemoveTab(tabs[activeTab].id)} />
+            {tab.data && (
+              <APITab
+                onClose={() => handleRemoveTab(tab.id)}
+                tabId={tab.id}
+                method={tab.data.method}
+                url={tab.data.url}
+                queryParams={tab.data.queryParams}
+                jsonData={tab.data.jsonData}
+                headers={tab.data.headers}
+                response={tab.data.response}
+                loading={tab.data.loading}
+                error={tab.data.error}
+                activeTab={tab.data.activeTab}
+              />
+            )}
           </div>
         ))
       )}
