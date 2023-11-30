@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon,XMarkIcon } from "@heroicons/react/24/outline";
 import { Link, useLocation } from "react-router-dom";
+import BASE_URL from "../services/helper";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -132,7 +133,7 @@ export default function Header({ user, isLoggedIn }) {
                         {({ active }) =>
                           isLoggedIn ? (
                             <a
-                              href="https://postman-071b.onrender.com/auth/logout"
+                              href={`${BASE_URL}/auth/logout`}
                               className={classNames(
                                 active ? "bg-gray-100" : "",
                                 "block px-4 py-2  text-sm text-gray-700"
@@ -142,7 +143,7 @@ export default function Header({ user, isLoggedIn }) {
                             </a>
                           ) : (
                             <a
-                              href="https://postman-071b.onrender.com/auth/google"
+                              href={`${BASE_URL}/auth/google`}
                               className={classNames(
                                 active ? "bg-gray-100" : "",
                                 "block px-4 py-2  text-sm text-gray-700"

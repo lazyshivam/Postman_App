@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import BASE_URL from "../services/helper";
 
 const Home = ({loggedInUser}) => {
   const [apiLinks, setApiLinks] = useState([]);
@@ -7,7 +8,7 @@ const Home = ({loggedInUser}) => {
 
   // Fetch saved API links from the server
   useEffect(() => {
-     axios.get('https://postman-071b.onrender.com/api/data/apiLinks',{withCredentials:true}).then((response) => {
+     axios.get(`${BASE_URL}/api/data/apiLinks`,{withCredentials:true}).then((response) => {
       if(response.status===200){
         return response.data;
       }
@@ -24,7 +25,7 @@ const Home = ({loggedInUser}) => {
 
   // Deleting the saved API links from the server
   const handleDelete = (id) => {
-    axios.delete(`https://postman-071b.onrender.com/api/data/apiLinks/${id}`,{withCredentials:true}).then((response)=>{
+    axios.delete(`${BASE_URL}/api/data/apiLinks/${id}`,{withCredentials:true}).then((response)=>{
      if(response.status===200){
       console.log(response)
       setApiLinks(apiLinks.filter((link) => link._id !== id));
@@ -45,7 +46,7 @@ const Home = ({loggedInUser}) => {
       setError('There is an empty field.');
       return;
     }
-     axios.post('https://postman-071b.onrender.com/api/data/apiLinks',newLink,{withCredentials: true}).then((response)=>{
+     axios.post(`${BASE_URL}/api/data/apiLinks`,newLink,{withCredentials: true}).then((response)=>{
       console.log(response.data);
       setApiLinks([...apiLinks, response.data]);
       setNewLink({title:"", url: "", method: "" });

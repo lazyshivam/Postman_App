@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import BASE_URL from "../services/helper";
 
 const LandingPage = () => {
   return (
@@ -19,7 +20,7 @@ const LandingPage = () => {
         </Link>
 
         <a
-          href="https://postman-071b.onrender.com/auth/google"
+          href={`${BASE_URL}/auth/google`}
           className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-700"
         >
           Login

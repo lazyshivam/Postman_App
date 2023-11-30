@@ -7,6 +7,7 @@ import LandingPage from "./components/LandingPage";
 import Header from "./components/Header";
 import About from "./components/About";
 import TabCollections from "./components/TabCollections";
+import BASE_URL from "./services/helper";
 
 function App() {
   const [userData, setUserData] = useState(null);
@@ -15,7 +16,7 @@ function App() {
 
   useEffect(() => {
     axios
-      .get("https://postman-071b.onrender.com/auth/profile", { withCredentials: true })
+      .get(`${BASE_URL}/auth/profile`, { withCredentials: true })
       .then((response) => {
         if (response.status === 200) {
           return response.data; // Add this return statement
