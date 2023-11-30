@@ -2,13 +2,12 @@
 const express = require("express");
 const passport = require("passport");
 const router = express.Router();
-const { google } = require("googleapis");
 const ensureAuthenticated=require("../middleware/ensureAuthenticated");
 
 router.get(
   "/google",
   passport.authenticate("google", {
-    scope: ["https://www.googleapis.com/auth/calendar", "email", "profile"],
+    scope: ["email", "profile"],
   })
 );
 
@@ -43,7 +42,7 @@ router.get("/logout", ensureAuthenticated, (req, res) => {
       return res.status(500).json({ error: "Error logging out" });
     }
     // res.send(`User logged out: ${req.user}`);
-    // You can also redirect the user to a different page after logging them out.
+    // redirect the user to a different page after logging them out.
     res.redirect(process.env.Home_URL);
   });
 });

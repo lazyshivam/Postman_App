@@ -9,7 +9,7 @@ const app = express();
 const port = 8000;
 //function call to connect to the mongoDb Database
 connectToMongo();
-// Middleware setup
+// Middleware setup 
 app.use(
   cors({
 		origin: process.env.Home_URL,
@@ -17,8 +17,9 @@ app.use(
 		credentials: true,
 	})
 );
+
 app.use(express.json());
-// app.use(express.urlencoded({extended: true}));
+// app.use(express.urlencoded({extended: false}));
 
 app.use(
   cookie_session({
@@ -39,6 +40,6 @@ app.use("/api/data", require("./routes/apiLinks"))
 app.all('*', (req, res) => {
   res.status(404).json({ error: 'Not Found' });
 });
-app.listen(port, () => {
+app.listen(port||process.env.PORT, () => {
   console.log(`Server is running on port ${port}`);
 });
