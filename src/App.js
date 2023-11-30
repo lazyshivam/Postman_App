@@ -15,7 +15,7 @@ function App() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/auth/profile", { withCredentials: true })
+      .get("https://postman-071b.onrender.com/auth/profile", { withCredentials: true })
       .then((response) => {
         if (response.status === 200) {
           return response.data; // Add this return statement

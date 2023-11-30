@@ -7,7 +7,7 @@ const Home = ({loggedInUser}) => {
 
   // Fetch saved API links from the server
   useEffect(() => {
-     axios.get('http://localhost:8000/api/data/apiLinks',{withCredentials:true}).then((response) => {
+     axios.get('https://postman-071b.onrender.com/api/data/apiLinks',{withCredentials:true}).then((response) => {
       if(response.status===200){
         return response.data;
       }
@@ -24,7 +24,7 @@ const Home = ({loggedInUser}) => {
 
   // Deleting the saved API links from the server
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:8000/api/data/apiLinks/${id}`,{withCredentials:true}).then((response)=>{
+    axios.delete(`https://postman-071b.onrender.com/api/data/apiLinks/${id}`,{withCredentials:true}).then((response)=>{
      if(response.status===200){
       console.log(response)
       setApiLinks(apiLinks.filter((link) => link._id !== id));
@@ -45,7 +45,7 @@ const Home = ({loggedInUser}) => {
       setError('There is an empty field.');
       return;
     }
-     axios.post('http://localhost:8000/api/data/apiLinks',newLink,{withCredentials: true}).then((response)=>{
+     axios.post('https://postman-071b.onrender.com/api/data/apiLinks',newLink,{withCredentials: true}).then((response)=>{
       console.log(response.data);
       setApiLinks([...apiLinks, response.data]);
       setNewLink({title:"", url: "", method: "" });
