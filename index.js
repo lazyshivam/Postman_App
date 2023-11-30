@@ -1,6 +1,7 @@
 const express = require("express");
 const cookie_session = require("express-session");
 const cors = require("cors");
+const path = require("path");
 const passport = require("./passportAuth"); // Import your Passport configuration
 require("dotenv").config();
 const connectToMongo=require("./db");
@@ -10,6 +11,12 @@ const port = 8000;
 //function call to connect to the mongoDb Database
 connectToMongo();
 // Middleware setup 
+app.use(express.static( 'build'));
+
+// Handle other routes
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'build/index.html'));
+// });
 app.use(
   cors({
 		origin: process.env.Home_URL,
