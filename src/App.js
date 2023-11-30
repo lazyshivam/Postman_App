@@ -25,7 +25,7 @@ function App() {
         }
       })
       .then((data) => {
-        // console.log(data.user.displayName);
+        console.log(data);
         setUserData(data.user);
         setIsloggedIn(true);
       })
